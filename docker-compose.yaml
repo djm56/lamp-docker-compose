@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+    php-httpd:
+        image: php:7.4-apache
+        restart: unless-stopped
+        ports:
+            - 80:80
+        volumes:
+            - "./public_html:/var/www/html"
+
+    mysqldb:
+        image: mysql
+        restart: unless-stopped
+        volumes:
+            - mysqldb-volume:/var/lib/mysql
+        environment:
+            TZ: "Africa/Johannesburg"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+            MYSQL_ROOT_PASSWORD: "rootpwd"
+            MYSQL_USER: 'testuser'
+            MYSQL_PASSWORD: 'testpassword'
+            MYSQL_DATABASE: 'testdb'
+
+    adminer:
+      image: adminer
+      restart: unless-stopped
+      ports:
+        - 8080:8080
+      depends_on:
+      - "mysqldb"
+
+volumes:
+    mysqldb-volume:
